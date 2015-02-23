@@ -76,7 +76,7 @@ module.exports = React.createClass({
         <p>{this.state.connected ? "Connected to server." :
                                    "Connecting to server..."}</p>
         <form onSubmit={this.handleSubmit}>
-          <input type="file" name="file" multiple="multiple"/>
+          <input required type="file" name="file" multiple="multiple"/>
           <button type="submit">Upload</button>
         </form>
         {this.state.uploads.length
