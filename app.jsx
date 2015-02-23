@@ -3,15 +3,24 @@ var React = require('react');
 var Upload = React.createClass({
   getInitialState: function() {
     return {
-      status: null
+      status: null,
+      progress: 0
     };
   },
   componentDidMount: function() {
     var req = new XMLHttpRequest();
+    req.addEventListener('progress', this.handleProgress);
+    req.addEventListener('load', this.handleLoad);
     req.open('POST', '/upload/' + this.props.file.name);
-    req.onload = this.handleLoad;
     req.send(this.props.file);
     this.req = req;
+  },
+  handleProgress: function(e) {
+    if (e.lengthComputable) {
+      this.setState({
+        progress: Math.floor(e.loaded / e.total * 100)
+      });
+    }
   },
   handleLoad: function() {
     this.setState({
@@ -19,7 +28,9 @@ var Upload = React.createClass({
     });
   },
   render: function() {
-    return <div>Uploading <code>{this.props.file.name}</code> {this.state.status}</div>;
+    return <div>
+      Uploading <code>{this.props.file.name}</code> <progress max="100" value={this.state.progress}>{this.state.progress}%</progress> {this.state.status}
+    </div>;
   }
 });
 
