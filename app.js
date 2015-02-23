@@ -89,15 +89,12 @@ if (USERPASS.length == 2)
 
 app.post('/upload/:filename', function(req, res, next) {
   var filename = findBestFilename(req.params['filename']);
+  var outfile = fs.createWriteStream(UPLOAD_DIR + '/' + filename);
 
-  setTimeout(function() {
-    var outfile = fs.createWriteStream(UPLOAD_DIR + '/' + filename);
-
-    outfile.on('finish', function() {
-      res.send('file uploaded!');
-    });
-    req.pipe(outfile);
-  }, 3000);
+  outfile.on('finish', function() {
+    res.send('file uploaded!');
+  });
+  req.pipe(outfile);
 });
 
 app.use(express.static(__dirname + '/static'));
