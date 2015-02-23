@@ -1,0 +1,20 @@
+{
+  "name": "toss-me",
+  "version": "0.0.1",
+  "description": "Easily toss files from one device to another.",
+  "dependencies": {
+    "basic-auth": "^1.0.0",
+    "react": "^0.12.2",
+    "express": "^4.11.2",
+    "reactify": "^1.0.0",
+    "watchify": "^2.4.0",
+    "ws": "^0.7.1",
+    "browserify": "^9.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
