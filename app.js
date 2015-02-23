@@ -93,8 +93,10 @@ app.post('/upload/:filename', function(req, res, next) {
   setTimeout(function() {
     var outfile = fs.createWriteStream(UPLOAD_DIR + '/' + filename);
 
+    outfile.on('finish', function() {
+      res.send('file uploaded!');
+    });
     req.pipe(outfile);
-    res.send('file uploaded!');
   }, 3000);
 });
 
