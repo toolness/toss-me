@@ -11,6 +11,7 @@ var Upload = React.createClass({
     var req = new XMLHttpRequest();
     req.addEventListener('progress', this.handleProgress);
     req.addEventListener('load', this.handleLoad);
+    req.addEventListener('error', this.handleError);
     req.open('POST', '/upload/' + this.props.file.name);
     req.send(this.props.file);
     this.req = req;
@@ -25,6 +26,11 @@ var Upload = React.createClass({
   handleLoad: function() {
     this.setState({
       status: this.req.status
+    });
+  },
+  handleError: function() {
+    this.setState({
+      status: 'ERROR'
     });
   },
   render: function() {
