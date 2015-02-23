@@ -1,5 +1,7 @@
 var fs = require('fs');
+var path = require('path');
 var http = require('http');
+var slugify = require('slugify');
 var basicAuth = require('basic-auth');
 var WebSocketServer = require('ws').Server;
 var express = require('express');
@@ -20,6 +22,20 @@ var bundler = watchify(browserify('./browser-main.js', {
 }));
 var app = express();
 var server, webSocketServer;
+
+function findBestFilename(filename) {
+  var extname = path.extname(filename);
+  var basename = slugify(path.basename(filename, extname));
+  var i = 0;
+  var candidate = basename + extname;
+
+  while (fs.existsSync(path.join(UPLOAD_DIR, candidate))) {
+    i++;
+    candidate = basename + '-' + i + extname;
+  }
+
+  return candidate;
+}
 
 function getUploads() {
   return fs.readdirSync(UPLOAD_DIR).map(function(filename) {
@@ -72,10 +88,7 @@ if (USERPASS.length == 2)
   });
 
 app.post('/upload/:filename', function(req, res, next) {
-  var filename = req.params['filename'];
-
-  if (!/^[A-Za-z0-9\-_.]+$/.test(filename))
-    return res.sendStatus(400);
+  var filename = findBestFilename(req.params['filename']);
 
   setTimeout(function() {
     var outfile = fs.createWriteStream(UPLOAD_DIR + '/' + filename);

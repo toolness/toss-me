@@ -4,12 +4,13 @@
   "description": "Easily toss files from one device to another.",
   "dependencies": {
     "basic-auth": "^1.0.0",
-    "react": "^0.12.2",
+    "browserify": "^9.0.3",
     "express": "^4.11.2",
+    "react": "^0.12.2",
     "reactify": "^1.0.0",
+    "slugify": "^0.1.0",
     "watchify": "^2.4.0",
-    "ws": "^0.7.1",
-    "browserify": "^9.0.3"
+    "ws": "^0.7.1"
   },
   "devDependencies": {},
   "scripts": {
