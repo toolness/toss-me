@@ -73,9 +73,17 @@ module.exports = React.createClass({
   },
   handleMessage: function(e) {
     var data = JSON.parse(e.data);
-    this.setState({
-      files: data
-    });
+    if (data.type == 'uploads') {
+      this.setState({
+        files: data.uploads
+      });
+    } else if (data.type == 'reload') {
+      setTimeout(function() {
+        window.location.reload();
+      }, 250);
+    } else {
+      console.log("unrecognized message: " + e.data);
+    }
   },
   handleSubmit: function(e) {
     var fileInput = e.target.file;

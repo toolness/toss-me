@@ -52,7 +52,10 @@ function getUploads() {
   uploads = _.sortBy(uploads, 'lastModified');
   uploads.reverse();
 
-  return uploads;
+  return {
+    type: 'uploads',
+    uploads: uploads
+  };
 }
 
 function send(ws, msg) {
@@ -73,7 +76,10 @@ function bundle() {
     .on('error', function(err) {
       console.log(err.toString());
     })
-    .pipe(fs.createWriteStream(__dirname + '/static/browser-main.js'));
+    .pipe(fs.createWriteStream(__dirname + '/static/browser-main.js'))
+    .on('finish', function() {
+      if (DEBUG) broadcast({type: 'reload'});
+    });
 }
 
 if (!fs.existsSync(UPLOAD_DIR))
@@ -140,3 +146,8 @@ webSocketServer.on('connection', function(ws) {
 fs.watch(UPLOAD_DIR, function() {
   broadcast(getUploads());
 });
+
+if (DEBUG)
+  fs.watch(__dirname + '/static/index.html', function(e) {
+    broadcast({type: 'reload'});
+  });
