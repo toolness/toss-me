@@ -125,8 +125,11 @@ module.exports = React.createClass({
   render: function() {
     return (
       <div className="container">
-        <br/>
         <div className="jumbotron">
+          <a href="http://l-o-t-r.tumblr.com/post/28124873645/i-cannot-jump-the-distance-youll-have-to-toss"
+             target="_blank">
+            <img className="toss-me" src="/toss-me.gif"/>
+          </a>
           <h1>Toss Me</h1>
           <p>Use the form below to quickly upload <strong>temporary</strong> files that you and your colleagues can retrieve from any device.</p>
         </div>

@@ -8,6 +8,38 @@ code {
   color: inherit;
 }
 
+.jumbotron {
+  margin-top: 20px;
+  position: relative;
+}
+
+.jumbotron img.toss-me {
+  position: absolute;
+
+  transform: rotate(20deg);
+  transform-origin: top right;
+  -moz-transform: rotate(20deg);
+  -moz-transform-origin: top right;
+  -webkit-transform: rotate(20deg);
+  -webkit-transform-origin: top right;
+
+  filter: grayscale(50%);
+  -moz-filter: grayscale(50%);
+  -webkit-filter: grayscale(50%);
+
+  top: 20px;
+  right: -10px;
+  width: 100px;
+}
+
+@media (min-width: 768px) {
+  .jumbotron img.toss-me {
+    top: 40px;
+    right: -10px;
+    width: 150px;
+  }
+}
+
 .connection-status {
   opacity: 0;
   transition: opacity 0.5s;
