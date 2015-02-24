@@ -120,8 +120,11 @@ module.exports = React.createClass({
              <ul>
              {this.state.files.map(function(info) {
                return <li key={info.url}>
-                 <a href={info.url}
-                    target="_blank"><code>{info.filename}</code></a>
+                 <code>
+                 {info.isUploading
+                  ? <span style={{color: 'gray'}}>{info.filename}</span>
+                  : <a href={info.url} target="_blank">{info.filename}</a>}
+                 </code>
                </li>;
              })}
              </ul>

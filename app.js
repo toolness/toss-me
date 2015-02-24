@@ -39,10 +39,9 @@ function findBestFilename(filename, intermediateExt) {
 }
 
 function getUploads() {
-  return fs.readdirSync(UPLOAD_DIR).filter(function(filename) {
-    return (!(filename in filesBeingUploaded));
-  }).map(function(filename) {
+  return fs.readdirSync(UPLOAD_DIR).map(function(filename) {
     return {
+      isUploading: filename in filesBeingUploaded,
       url: '/uploads/' + filename,
       filename: filename
     };
