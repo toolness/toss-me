@@ -130,7 +130,7 @@ module.exports = React.createClass({
              target="_blank">
             <img className="toss-me" src="/toss-me.gif"/>
           </a>
-          <h1>Toss Me</h1>
+          <h1>{document.title}</h1>
           <p>Use the form below to quickly upload <strong>temporary</strong> files that you and your colleagues can retrieve from any device.</p>
         </div>
         <p className={React.addons.classSet({
