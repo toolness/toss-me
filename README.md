@@ -1,3 +1,8 @@
+This is a simple HTML5 app that lets users toss temporary
+files between devices.
+
+<img src="https://raw.githubusercontent.com/toolness/toss-me/master/static/toss-me.gif">
+
 ## Quick Start
 
 ```
