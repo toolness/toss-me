@@ -125,12 +125,17 @@ module.exports = React.createClass({
   render: function() {
     return (
       <div className="container">
-        <h1>Toss Me</h1>
+        <br/>
+        <div className="jumbotron">
+          <h1>Toss Me</h1>
+          <p>Use the form below to quickly upload <strong>temporary</strong> files that you and your colleagues can retrieve from any device.</p>
+        </div>
         <p>{this.state.connected
             ? "Connected to server."
             : <span>
                 Connecting to server&hellip; <img src="/throbber.svg"/>
               </span>}</p>
+        <h2>Upload Files</h2>
         <form onSubmit={this.handleSubmit}>
           <div className="form-group">
             <label className="sr-only">Files to upload</label>
@@ -146,7 +151,7 @@ module.exports = React.createClass({
         </form>
         {this.state.uploads.length
          ? <div>
-             <h2>Uploads</h2>
+             <h2>Current Uploads</h2>
              <ul className="list-group">
              {this.state.uploads.map(function(info, i) {
                return <li className="list-group-item" key={i}>
@@ -158,7 +163,8 @@ module.exports = React.createClass({
          : null}
         {this.state.files.length
          ? <div>
-             <h2>Files</h2>
+             <h2>Available Files</h2>
+             <p>Note that the following files are only available <strong>temporarily</strong> and could disappear at any time.</p>
              <ul className="list-group file-list">
              {this.state.files.map(function(info) {
                return <li className={React.addons.classSet({
