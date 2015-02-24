@@ -6,6 +6,9 @@ files between devices.
 ## Quick Start
 
 ```
+git clone https://github.com/toolness/toss-me.git
+cd toss-me
+npm install
 DEBUG= node app.js
 ```
 
