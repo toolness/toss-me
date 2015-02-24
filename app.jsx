@@ -1,4 +1,4 @@
-var React = require('react');
+var React = require('react/addons');
 
 var Upload = React.createClass({
   getInitialState: function() {
@@ -37,7 +37,27 @@ var Upload = React.createClass({
   },
   render: function() {
     return <div>
-      Uploading <code>{this.props.file.name}</code> <progress max="100" value={this.state.progress}>{this.state.progress}%</progress> {this.state.status}
+      <p>Uploading <code>{this.props.file.name}</code> {
+        this.state.status
+        ? <span className={React.addons.classSet({
+            "label": true,
+            "label-success": this.state.status == 200,
+            "label-danger": this.state.status != 200
+          })}>{this.state.status}</span>
+        : null
+      }</p>
+
+      <div className="progress">
+        <div
+         className="progress-bar"
+         role="progressbar"
+         aria-valuenow={this.state.progress}
+         aria-valuemin="0"
+         aria-valuemax="100"
+         style={{width: this.state.progress + '%'}}>
+          <span className="sr-only">{this.state.progress}% Complete</span>
+        </div>
+      </div>
     </div>;
   }
 });
@@ -102,20 +122,29 @@ module.exports = React.createClass({
   },
   render: function() {
     return (
-      <div>
+      <div className="container">
+        <h1>Toss Me</h1>
         <p>{this.state.connected ? "Connected to server." :
                                    "Connecting to server..."}</p>
         <form onSubmit={this.handleSubmit}>
-          <input required type="file" name="file" multiple="multiple"/>
-          <input type="checkbox" name="ispublic"/> Public
-          <button type="submit">Upload</button>
+          <div className="form-group">
+            <label className="sr-only">Files to upload</label>
+            <input required type="file" name="file" multiple="multiple"/>
+          </div>
+          <div className="checkbox">
+            <label>
+              <input type="checkbox" name="ispublic"/> Files are public
+            </label>
+            <p className="help-block">Public files don't require a username or password to access.</p>
+          </div>
+          <button type="submit" className="btn btn-primary">Upload</button>
         </form>
         {this.state.uploads.length
          ? <div>
-             <h1>Uploads</h1>
-             <ul>
+             <h2>Uploads</h2>
+             <ul className="list-group">
              {this.state.uploads.map(function(info, i) {
-               return <li key={i}>
+               return <li className="list-group-item" key={i}>
                  <Upload file={info.file} isPublic={info.isPublic}/>
                </li>
              })}
@@ -125,14 +154,22 @@ module.exports = React.createClass({
         {this.state.files.length
          ? <div>
              <h2>Files</h2>
-             <ul>
+             <ul className="list-group file-list">
              {this.state.files.map(function(info) {
-               return <li key={info.url}>
-                 <code>
-                 {info.isUploading
-                  ? <span style={{color: 'gray'}}>{info.filename}</span>
-                  : <a href={info.url} target="_blank">{info.filename}</a>}
-                 </code>
+               return <li className={React.addons.classSet({
+                 "list-group-item": true,
+                 "disabled": info.isUploading
+               })} key={info.url}>
+                 <div className="row">
+                   <div className="col-xs-11">
+                     <code>
+                       <a href={info.url} target="_blank">{info.filename}</a>
+                     </code>
+                    </div>
+                    <div className="col-xs-1">
+                      <a title="Download this file" href={info.url} download={info.filename}><span className="glyphicon glyphicon-save"/></a>
+                    </div>
+                 </div>
                </li>;
              })}
              </ul>
