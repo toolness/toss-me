@@ -74,6 +74,7 @@ function bundle() {
   console.log("Rebuilding bundle.");
   bundler.bundle()
     .on('error', function(err) {
+      broadcast({type: 'error', message: err.toString()});
       console.log(err.toString());
     })
     .pipe(fs.createWriteStream(__dirname + '/static/browser-main.js'))

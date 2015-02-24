@@ -101,6 +101,8 @@ module.exports = React.createClass({
       setTimeout(function() {
         window.location.reload();
       }, 250);
+    } else if (data.type == 'error') {
+      console.error(data.message);
     } else {
       console.log("unrecognized message: " + e.data);
     }
