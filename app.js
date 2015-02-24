@@ -70,16 +70,19 @@ function broadcast(msg) {
   });
 }
 
-function bundle() {
+function bundle(cb) {
+  cb = typeof(cb) == 'function' ? cb : function() {};
   console.log("Rebuilding bundle.");
   bundler.bundle()
     .on('error', function(err) {
       broadcast({type: 'error', message: err.toString()});
       console.log(err.toString());
+      cb(err);
     })
     .pipe(fs.createWriteStream(__dirname + '/static/browser-main.js'))
     .on('finish', function() {
       if (DEBUG) broadcast({type: 'reload'});
+      cb(null);
     });
 }
 
@@ -88,7 +91,6 @@ if (!fs.existsSync(UPLOAD_DIR))
 
 bundler.transform('reactify');
 bundler.on('update', bundle);
-bundle();
 
 if (USERPASS.length == 2)
   app.use(function(req, res, next) {
@@ -126,8 +128,12 @@ app.use(express.static(__dirname + '/static'));
 
 server = http.createServer(app);
 
-server.listen(PORT, function() {
-  console.log("listening on port " + PORT);
+bundle(function(err) {
+  if (err) throw err;
+
+  server.listen(PORT, function() {
+    console.log("listening on port " + PORT);
+  });
 });
 
 webSocketServer = new WebSocketServer({server: server});
