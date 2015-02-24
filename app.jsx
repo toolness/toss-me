@@ -124,8 +124,11 @@ module.exports = React.createClass({
     return (
       <div className="container">
         <h1>Toss Me</h1>
-        <p>{this.state.connected ? "Connected to server." :
-                                   "Connecting to server..."}</p>
+        <p>{this.state.connected
+            ? "Connected to server."
+            : <span>
+                Connecting to server&hellip; <img src="/throbber.svg"/>
+              </span>}</p>
         <form onSubmit={this.handleSubmit}>
           <div className="form-group">
             <label className="sr-only">Files to upload</label>
