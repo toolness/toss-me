@@ -24,15 +24,15 @@ var bundler = watchify(browserify('./browser-main.js', {
 var app = express();
 var server, webSocketServer;
 
-function findBestFilename(filename) {
+function findBestFilename(filename, intermediateExt) {
   var extname = path.extname(filename);
   var basename = slugify(path.basename(filename, extname));
   var i = 0;
-  var candidate = basename + extname;
+  var candidate = basename + intermediateExt + extname;
 
   while (fs.existsSync(path.join(UPLOAD_DIR, candidate))) {
     i++;
-    candidate = basename + '-' + i + extname;
+    candidate = basename + '-' + i + intermediateExt + extname;
   }
 
   return candidate;
@@ -79,6 +79,8 @@ bundle();
 
 if (USERPASS.length == 2)
   app.use(function(req, res, next) {
+    if (/^\/uploads\/.*\.public\./.test(req.path))
+      return next();
     var user = basicAuth(req);
     if (!user || user.name != USERPASS[0] ||
         user.pass != USERPASS[1]) {
@@ -91,7 +93,9 @@ if (USERPASS.length == 2)
   });
 
 app.post('/upload/:filename', function(req, res, next) {
-  var filename = findBestFilename(req.params['filename']);
+  var isPublic = (req.headers['x-is-public'] == '1');
+  var filename = findBestFilename(req.params['filename'],
+                                  isPublic ? '.public' : '');
   var outfile = fs.createWriteStream(UPLOAD_DIR + '/' + filename);
 
   filesBeingUploaded[filename] = true;

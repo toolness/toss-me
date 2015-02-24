@@ -13,6 +13,8 @@ var Upload = React.createClass({
     req.addEventListener('load', this.handleLoad);
     req.addEventListener('error', this.handleError);
     req.open('POST', '/upload/' + this.props.file.name);
+    if (this.props.isPublic)
+      req.setRequestHeader('x-is-public', '1');
     req.send(this.props.file);
     this.req = req;
   },
@@ -81,7 +83,10 @@ module.exports = React.createClass({
     e.preventDefault();
 
     for (var i = 0; i < fileInput.files.length; i++)
-      newFiles.push(fileInput.files[i]);
+      newFiles.push({
+        file: fileInput.files[i],
+        isPublic: e.target.ispublic.checked
+      });
 
     this.setState({
       uploads: this.state.uploads.concat(newFiles)
@@ -94,15 +99,16 @@ module.exports = React.createClass({
                                    "Connecting to server..."}</p>
         <form onSubmit={this.handleSubmit}>
           <input required type="file" name="file" multiple="multiple"/>
+          <input type="checkbox" name="ispublic"/> Public
           <button type="submit">Upload</button>
         </form>
         {this.state.uploads.length
          ? <div>
              <h1>Uploads</h1>
              <ul>
-             {this.state.uploads.map(function(file, i) {
+             {this.state.uploads.map(function(info, i) {
                return <li key={i}>
-                 <Upload file={file}/>
+                 <Upload file={info.file} isPublic={info.isPublic}/>
                </li>
              })}
              </ul>
