@@ -130,11 +130,12 @@ module.exports = React.createClass({
           <h1>Toss Me</h1>
           <p>Use the form below to quickly upload <strong>temporary</strong> files that you and your colleagues can retrieve from any device.</p>
         </div>
-        <p>{this.state.connected
-            ? "Connected to server."
-            : <span>
-                Connecting to server&hellip; <img src="/throbber.svg"/>
-              </span>}</p>
+        <p className={React.addons.classSet({
+          "connection-status": true,
+          "disconnected": !this.state.connected
+        })}>
+          Connecting to server&hellip; <img src="/throbber.svg"/>
+        </p>
         <h2>Upload Files</h2>
         <form onSubmit={this.handleSubmit}>
           <div className="form-group">
