@@ -9,6 +9,7 @@
     "react": "^0.12.2",
     "reactify": "^1.0.0",
     "slugify": "^0.1.0",
+    "underscore": "^1.8.2",
     "watchify": "^2.4.0",
     "ws": "^0.7.1"
   },

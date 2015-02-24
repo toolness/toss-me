@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var http = require('http');
+var _ = require('underscore');
 var slugify = require('slugify');
 var basicAuth = require('basic-auth');
 var WebSocketServer = require('ws').Server;
@@ -39,13 +40,19 @@ function findBestFilename(filename, intermediateExt) {
 }
 
 function getUploads() {
-  return fs.readdirSync(UPLOAD_DIR).map(function(filename) {
+  var uploads = fs.readdirSync(UPLOAD_DIR).map(function(filename) {
     return {
       isUploading: filename in filesBeingUploaded,
+      lastModified: fs.statSync(path.join(UPLOAD_DIR, filename)).mtime,
       url: '/uploads/' + filename,
       filename: filename
     };
   });
+
+  uploads = _.sortBy(uploads, 'lastModified');
+  uploads.reverse();
+
+  return uploads;
 }
 
 function send(ws, msg) {
