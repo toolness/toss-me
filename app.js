@@ -13,6 +13,7 @@ var UPLOAD_DIR = __dirname + '/static/uploads';
 var PORT = process.env.PORT || 3000;
 var USERPASS = (process.env.USERPASS || '').split(':');
 
+var filesBeingUploaded = {};
 var connections = [];
 var bundler = watchify(browserify('./browser-main.js', {
   cache: {},
@@ -38,7 +39,9 @@ function findBestFilename(filename) {
 }
 
 function getUploads() {
-  return fs.readdirSync(UPLOAD_DIR).map(function(filename) {
+  return fs.readdirSync(UPLOAD_DIR).filter(function(filename) {
+    return (!(filename in filesBeingUploaded));
+  }).map(function(filename) {
     return {
       url: '/uploads/' + filename,
       filename: filename
@@ -91,10 +94,15 @@ app.post('/upload/:filename', function(req, res, next) {
   var filename = findBestFilename(req.params['filename']);
   var outfile = fs.createWriteStream(UPLOAD_DIR + '/' + filename);
 
-  outfile.on('finish', function() {
-    res.send('file uploaded!');
-  });
-  req.pipe(outfile);
+  filesBeingUploaded[filename] = true;
+  setTimeout(function() {
+    outfile.on('finish', function() {
+      res.send('file uploaded!');
+      delete filesBeingUploaded[filename];
+      broadcast(getUploads());
+    });
+    req.pipe(outfile);
+  }, 1000);
 });
 
 app.use(express.static(__dirname + '/static'));
