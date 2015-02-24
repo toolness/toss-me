@@ -136,7 +136,6 @@ module.exports = React.createClass({
         })}>
           Connecting to server&hellip; <img src="/throbber.svg"/>
         </p>
-        <h2>Upload Files</h2>
         <form onSubmit={this.handleSubmit}>
           <div className="form-group">
             <label className="sr-only">Files to upload</label>
