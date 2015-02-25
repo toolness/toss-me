@@ -1,6 +1,70 @@
 var config = require('clientconfig');
 var React = require('react/addons');
 
+var ImagePasteArea = React.createClass({
+  // http://stackoverflow.com/a/6691294
+  pasteHtmlAtCaret: function(html) {
+    var sel, range;
+    if (window.getSelection) {
+      // IE9 and non-IE
+      sel = window.getSelection();
+      if (sel.getRangeAt && sel.rangeCount) {
+        range = sel.getRangeAt(0);
+        range.deleteContents();
+
+        // Range.createContextualFragment() would be useful here but is
+        // only relatively recently standardized and is not supported in
+        // some browsers (IE9, for one)
+        var el = document.createElement("div");
+        el.innerHTML = html;
+        var frag = document.createDocumentFragment(), node, lastNode;
+        while ( (node = el.firstChild) ) {
+          lastNode = frag.appendChild(node);
+        }
+        range.insertNode(frag);
+
+        // Preserve the selection
+        if (lastNode) {
+          range = range.cloneRange();
+          range.setStartAfter(lastNode);
+          range.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      }
+    } else if (document.selection && document.selection.type != "Control") {
+      // IE < 9
+      document.selection.createRange().pasteHTML(html);
+    }
+  },
+  handlePaste: function(e) {
+    var dt = e.nativeEvent.clipboardData;
+
+    // Chrome won't paste images into a contentEditable div so let's
+    // do that for it.
+    if (dt && dt.types.length == 1 && dt.types[0] == 'Files' &&
+        dt.items && dt.items[0] && dt.items[0].type.split('/')[0] == 'image') {
+      var file = dt.items[0].getAsFile();
+      var url = URL.createObjectURL(file);
+
+      console.log("pasting blob URL img at caret", url);
+      this.pasteHtmlAtCaret('<img src="' + url + '">');
+    }
+
+    // TODO: Find any pasted image and tell our parent about it.
+  },
+  render: function() {
+    var msgHTML = "Or, click here and paste an image from your " +
+                  "clipboard to upload it.";
+    return <p style={{
+      backgroundColor: 'lightyellow',
+      display: 'inline-block'
+    }} dangerouslySetInnerHTML={{
+      __html: msgHTML
+    }} onPaste={this.handlePaste} contentEditable></p>;
+  }
+});
+
 var Upload = React.createClass({
   getInitialState: function() {
     return {
@@ -145,6 +209,7 @@ module.exports = React.createClass({
             <label className="sr-only">Files to upload</label>
             <input required type="file" name="file" multiple="multiple"/>
           </div>
+          <div><ImagePasteArea/></div>
           <div className="checkbox" style={{
             display: config.HAS_USERPASS ? 'block' : 'none'
           }}>
