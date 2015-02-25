@@ -101,8 +101,21 @@ if (SECURE_PROXY_SSL_HEADER.length == 2)
     if ((req.headers[SECURE_PROXY_SSL_HEADER[0]] || '').toLowerCase() !==
         SECURE_PROXY_SSL_HEADER[1])
       return res.redirect(['https://', req.get('Host'), req.url].join(''));
+    req.isSecure = true;
     next();
   });
+
+app.use(function(req, res, next) {
+  var wsOrigin = (req.isSecure ? 'wss://' : 'ws://') + req.get('Host');
+
+  res.set('Strict-Transport-Security',
+          'max-age=31536000; includeSubDomains; preload');
+  res.set('Content-Security-Policy',
+          ["default-src 'self'",
+           "connect-src 'self' " + wsOrigin,
+           "style-src 'self' 'unsafe-inline'"].join('; '));
+  next();
+});
 
 if (HAS_USERPASS)
   app.use(function(req, res, next) {
