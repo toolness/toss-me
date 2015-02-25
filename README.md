@@ -27,6 +27,11 @@ string), the boolean is true; otherwise, it's false.
   set, the entire server is protected by HTTP Basic Authentication
   and requires the given username and password to access.
 
+* `SECURE_PROXY_SSL_HEADER` is an optional HTTP request header field name
+  and value indicating that the request is actually secure. For example,
+  Heroku deployments should set this to `X-Forwarded-Proto: https`. If
+  this is set, automatic redirection from http to https will also occur.
+
 ## Limitations
 
 The files are temporarily stored on the filesystem. In

@@ -14,6 +14,8 @@ var UPLOAD_DIR = __dirname + '/static/uploads';
 var PORT = process.env.PORT || 3000;
 var USERPASS = (process.env.USERPASS || '').split(':');
 var HAS_USERPASS = USERPASS.length == 2;
+var SECURE_PROXY_SSL_HEADER = (process.env.SECURE_PROXY_SSL_HEADER || '')
+  .split(':').map(function(s) { return s.toLowerCase().trim(); });
 
 var filesBeingUploaded = {};
 var connections = [];
@@ -92,6 +94,15 @@ if (!fs.existsSync(UPLOAD_DIR))
 
 bundler.transform('reactify');
 bundler.on('update', bundle);
+
+if (SECURE_PROXY_SSL_HEADER.length == 2)
+  app.use(function(req, res, next) {
+    // http://stackoverflow.com/a/23894573
+    if ((req.headers[SECURE_PROXY_SSL_HEADER[0]] || '').toLowerCase() !==
+        SECURE_PROXY_SSL_HEADER[1])
+      return res.redirect(['https://', req.get('Host'), req.url].join(''));
+    next();
+  });
 
 if (HAS_USERPASS)
   app.use(function(req, res, next) {
