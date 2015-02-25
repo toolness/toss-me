@@ -1,3 +1,4 @@
+var config = require('clientconfig');
 var React = require('react/addons');
 
 var Upload = React.createClass({
@@ -144,7 +145,9 @@ module.exports = React.createClass({
             <label className="sr-only">Files to upload</label>
             <input required type="file" name="file" multiple="multiple"/>
           </div>
-          <div className="checkbox">
+          <div className="checkbox" style={{
+            display: config.HAS_USERPASS ? 'block' : 'none'
+          }}>
             <label>
               <input type="checkbox" name="ispublic"/> Files are public
             </label>

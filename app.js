@@ -13,6 +13,7 @@ var DEBUG = 'DEBUG' in process.env;
 var UPLOAD_DIR = __dirname + '/static/uploads';
 var PORT = process.env.PORT || 3000;
 var USERPASS = (process.env.USERPASS || '').split(':');
+var HAS_USERPASS = USERPASS.length == 2;
 
 var filesBeingUploaded = {};
 var connections = [];
@@ -92,7 +93,7 @@ if (!fs.existsSync(UPLOAD_DIR))
 bundler.transform('reactify');
 bundler.on('update', bundle);
 
-if (USERPASS.length == 2)
+if (HAS_USERPASS)
   app.use(function(req, res, next) {
     if (/^\/uploads\/.*\.public\./.test(req.path))
       return next();
@@ -122,6 +123,13 @@ app.post('/upload/:filename', function(req, res, next) {
     });
     req.pipe(outfile);
   }, 1000);
+});
+
+app.get('/', function(req, res, next) {
+  res.cookie('config', JSON.stringify({
+    HAS_USERPASS: HAS_USERPASS
+  }));
+  next('route');
 });
 
 app.use(express.static(__dirname + '/static'));
