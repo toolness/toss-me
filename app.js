@@ -160,23 +160,6 @@ app.use(express.static(__dirname + '/static'));
 
 server = http.createServer(app);
 
-if (HAS_USERPASS)
-  server.on('upgrade', function(req, socket, head) {
-    var user = basicAuth(req);
-    if (!user || user.name != USERPASS[0] ||
-        user.pass != USERPASS[1]) {
-      // Taken from abortConnection() in ws/lib/WebSocketServer.js.
-      try {
-        return socket.write([
-          'HTTP/1.1 401 Unauthorized',
-          'WWW-Authenticate: Basic realm=Authorization Required'
-        ].concat('', '').join('\r\n'));
-      } catch (e) {} finally {
-        try { socket.destroy(); } catch (e) {}
-      }
-    }
-  });
-
 bundle(function(err) {
   if (err) throw err;
 
