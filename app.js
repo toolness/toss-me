@@ -113,6 +113,7 @@ app.use(function(req, res, next) {
   res.set('Content-Security-Policy',
           ["default-src 'self'",
            "connect-src 'self' " + wsOrigin,
+           "img-src 'self' data:",
            "style-src 'self' 'unsafe-inline'"].join('; '));
   next();
 });
